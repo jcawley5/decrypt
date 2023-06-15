@@ -22,3 +22,17 @@ mbt build
 ```
 cf deploy mta_archives/decrypt_1.0.0.mtar
 ```
+
+### Get app URL
+
+```
+cf apps
+```
+
+### Test app
+
+```
+curl --location --request POST 'https://**********-***-decrypt.cfapps.******.hana.ondemand.com/' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'jweToken=.kfgdYJSZzf2wuZM6aWZAe9tT9q2L04RwPZ108jcv4a8tsmYG_XHQmkqgt........z9GyHnr9ZYKqgHphIIwGuE'
+```
