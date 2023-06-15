@@ -1,0 +1,18 @@
+_schema-version: "2.1"
+ID: decrypt
+version: 1.0.0
+description: "decrypt"
+modules:
+  # --------------------- SERVER MODULE ------------------------
+  - name: decrypt
+    # ------------------------------------------------------------
+    type: nodejs
+    path: /
+    parameters:
+      memory: 256M
+      disk-quota: 512M
+      buildpack: nodejs_buildpack
+    provides:
+      - name: db-api
+        properties:
+          srv-url: "${default-url}"
