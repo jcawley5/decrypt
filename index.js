@@ -3,6 +3,13 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const crypto = require("crypto");
 const { JWK, JWE } = require("node-jose");
+const passport = require("passport");
+const xsenv = require("@sap/xsenv");
+const JWTStrategy = require("@sap/xssec").JWTStrategy;
+
+const services = xsenv.getServices({ uaa: "decrypt-uaa" });
+
+passport.use(new JWTStrategy(services.uaa));
 
 var contentAlg = "A256CBC-HS512";
 
@@ -30,12 +37,22 @@ const app = express();
 const port = 8080;
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(passport.initialize());
+app.use(passport.authenticate("JWT", { session: false }));
+
+app.get("/", async (req, res) => {
+  res.send("not implemented");
+});
+
 app.post("/", async (req, res) => {
   var result = "";
   try {
-    const jweToken = req.body.jweToken || (await createJWE());
-    result = await decryptJWE(jweToken);
-    console.log("result", JSON.parse(result));
+    const jweToken = req.body.jweToken;
+    if (jweToken) {
+      result = await decryptJWE(jweToken);
+    } else {
+      result = "no jweToken found";
+    }
   } catch (error) {
     console.log("error: ", error);
     result = { error: error.message };

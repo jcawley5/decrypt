@@ -2,10 +2,10 @@ _schema-version: "2.1"
 ID: decrypt
 version: 1.0.0
 description: "decrypt"
+parameters:
+  appname: decrypt
 modules:
-  # --------------------- SERVER MODULE ------------------------
   - name: decrypt
-    # ------------------------------------------------------------
     type: nodejs
     path: /
     parameters:
@@ -13,6 +13,21 @@ modules:
       disk-quota: 512M
       buildpack: nodejs_buildpack
     provides:
-      - name: db-api
+      - name: srv-api
         properties:
-          srv-url: "${default-url}"
+          srv-url: ${default-url}
+    requires:
+      - name: uaa
+resources:
+  - name: uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      service-name: ${appname}-uaa
+      config:
+        xsappname: ${appname}
+        tenant-mode: dedicated
+        oauth2-configuration:
+          credential-types:
+            - binding-secret
